@@ -1,8 +1,20 @@
 import axios from "axios";
 import { clearAuth, getToken } from "../utils/auth";
 
+const getBaseURL = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (!envUrl || envUrl === "undefined" || envUrl === "null" || envUrl.trim() === "") {
+    return "http://localhost:5000/api";
+  }
+  const cleanUrl = envUrl.trim();
+  if (!/^https?:\/\//i.test(cleanUrl)) {
+    return `https://${cleanUrl}`;
+  }
+  return cleanUrl;
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
+  baseURL: getBaseURL(),
 });
 
 api.interceptors.request.use((config) => {
